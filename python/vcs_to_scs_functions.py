@@ -62,15 +62,15 @@ def abs_dFzdz_log_depth_cf( z_vcs, C, far ):
 FLOAT_PRECISION_LOG = -24.0 * math.log(2.0)
 FLOAT_PRECISION = math.exp( FLOAT_PRECISION_LOG )
 
-def min_diff_perspective( z_vcs, near, far ):
+def min_gap_perspective( z_vcs, near, far ):
 
     return FLOAT_PRECISION / abs_dFzdz_perspective( z_vcs, near, far )
 
-def min_diff_log_depth_fn( z_vcs, near, far ):
+def min_gap_log_depth_fn( z_vcs, near, far ):
 
     return FLOAT_PRECISION / abs_dFzdz_log_depth_fn( z_vcs, near, far )
 
-def min_diff_log_depth_cf( z_vcs, C, far ):
+def min_gap_log_depth_cf( z_vcs, C, far ):
 
     return FLOAT_PRECISION / abs_dFzdz_log_depth_cf( z_vcs, C, far )
 
