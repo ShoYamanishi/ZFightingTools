@@ -311,9 +311,9 @@ plot_single_chart(
 theoretical_min_diff_far_e10_list= [
     min_diff_perspective_list[-1],
     min_diff_log_depth_fn_list[-1],
-    min_diff_log_depth_cf_06_list[-1],
+    min_diff_log_depth_cf_00_list[-1],
     min_diff_log_depth_cf_03_list[-1],
-    min_diff_log_depth_cf_00_list[-1]
+    min_diff_log_depth_cf_06_list[-1]
 ]
 
 theoretical_min_diff_far_e10_labels= [
@@ -329,7 +329,7 @@ plot_single_chart(
     theoretical_min_diff_far_e10_labels,
     True, 
     (1.0e-8, 1.0e6),
-   'min diffs in VCS', 
+   'min gap in VCS',
    'Theoretical Minimum Gaps in VCS : Different Depth Types, Near=1.0E-1, Far=1.0E10',
    OUTPUT_FILE_PATH + 'plot_theoretical_min_diffs_all.png'
 )
@@ -338,9 +338,9 @@ plot_single_chart(
 observed_min_diff_far_e10_list= [
     sampled_min_diff_perspective,
     sampled_min_diff_log_depth_fn,
-    sampled_min_diff_log_depth_cf_06,
+    sampled_min_diff_log_depth_cf_00,
     sampled_min_diff_log_depth_cf_03,
-    sampled_min_diff_log_depth_cf_00
+    sampled_min_diff_log_depth_cf_06
 ]
 
 observed_min_diff_far_e10_labels= [
@@ -356,7 +356,7 @@ plot_single_chart(
     observed_min_diff_far_e10_labels,
     True, 
     (1.0e-8, 1.0e6),
-   'min diffs in VCS', 
+   'min gap in VCS',
    'Observed Mininum Gaps in VCS : Different Depth Types, Near=1.0E-1, Far=1.0E10',
    OUTPUT_FILE_PATH + 'plot_observed_min_diffs_all.png'
 )
@@ -403,7 +403,7 @@ plot_single_chart(
     dFzdz_log_depth_cf_labels,
     True,
     None,
-   '|dF(z)/dz|', 
+   '|dF(z)/dz|',
    'dF(z)/dz: Log Depth (ln(-cz +1)/ln(cf+1)), F = 1.0E10',
    OUTPUT_FILE_PATH + 'plot_dFzdz_log_depth_cf.png'
 )
@@ -431,7 +431,7 @@ plot_single_chart(
     min_diff_log_depth_cf_labels,
     True,
     (1.0e-8, 1.0e6),
-   'min diff in VCS', 
+   'min diff in VCS',
    'Min diff in VCS: Log Depth (ln(-cz +1)/ln(cf+1)), F = 1.0E10',
    OUTPUT_FILE_PATH + 'plot_min_diff_log_depth_cf.png'
 )
