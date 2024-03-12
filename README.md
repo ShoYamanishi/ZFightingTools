@@ -14,6 +14,8 @@ This repository contains three tools that accompany the blog post on Medium.
 
 * `depth_test_batch`: command-line batch test tool to test the minimum gap for each sampled point in VCS by a combination of the grid search and the binary sesarch.
 
+It also contains some python scripts under [python/](python/) to generate the charts with matplotlib.
+The main script is [python/plot_depth.py](python/plot_depth.py).
 
 # Supported Environments
 
