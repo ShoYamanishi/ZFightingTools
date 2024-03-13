@@ -6,7 +6,9 @@ Tools to visualize and experiment with the Z-Fighting problem in OpenGL
 <a href="doc/banner2.png"><img src="doc/banner2.png" height="300"></a>
 
 # Overview
-This repository contains three tools that accompany the blog post on Medium.
+This repository contains three tools that accompany the blog post on Medium:
+
+[https://medium.com/@e92rodbearings/practical-analysis-on-the-z-fighting-and-the-logarithmic-depth-tests-for-computer-graphics-43509504e065](https://medium.com/@e92rodbearings/practical-analysis-on-the-z-fighting-and-the-logarithmic-depth-tests-for-computer-graphics-43509504e065)
 
 * `depth_test_interactive`: interactively visualizes the effect of Z-fighting with three different types of depth tests.
 
