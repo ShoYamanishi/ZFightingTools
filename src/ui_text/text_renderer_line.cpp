@@ -146,19 +146,19 @@ void TextRendererLine::generateRenderVertices( const std::vector< Font::GlyphBou
 
 }
 
-void TextRendererLine::setForegroundColor( const glm::vec4& color )
+void TextRendererLine::setInnerColor( const glm::vec4& color )
 {
     for ( int i = 0; i < m_num_glyphs; i++ ) {
 
-        m_vertices[i].setForegroundColor( color );
+        m_vertices[i].setInnerColor( color );
     }
 }
 
-void TextRendererLine::setBackgroundColor( const glm::vec4& color )
+void TextRendererLine::setOuterColor( const glm::vec4& color )
 {
     for ( int i = 0; i < m_num_glyphs; i++ ) {
 
-        m_vertices[i].setBackgroundColor( color );
+        m_vertices[i].setOuterColor( color );
     }
 }
 

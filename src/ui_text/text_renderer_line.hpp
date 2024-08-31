@@ -25,8 +25,8 @@ public:
 
     ~TextRendererLine();
 
-    void setForegroundColor( const glm::vec4& color );
-    void setBackgroundColor( const glm::vec4& color );
+    void setInnerColor( const glm::vec4& color );
+    void setOuterColor( const glm::vec4& color );
     void setBaseXY( const glm::vec2& base );
 
     int32_t numVertices() const;

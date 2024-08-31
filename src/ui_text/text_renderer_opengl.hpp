@@ -19,16 +19,16 @@ namespace DepthTest {
 static constexpr const char* VERT_STR_TEXT = "#version 330 core\n\
 \n\
 in vec4 position_lcs;\n\
-in vec4 fg_color_vin;\n\
-in vec4 bg_color_vin;\n\
+in vec4 inner_color_vin;\n\
+in vec4 outer_color_vin;\n\
 in vec2 texture_uv_vin;\n\
 \n\
 uniform mat4 P;\n\
 uniform mat4 V;\n\
 uniform mat4 M;\n\
 \n\
-out vec4 fg_color_vout;\n\
-out vec4 bg_color_vout;\n\
+out vec4 inner_color_vout;\n\
+out vec4 outer_color_vout;\n\
 out vec2 texture_uv_vout;\n\
 \n\
 void main() {\n\
@@ -36,8 +36,8 @@ void main() {\n\
     vec4 position_vcs = V * position_wcs;\n\
     gl_Position = P * position_vcs;\n\
 \n\
-    fg_color_vout = fg_color_vin;\n\
-    bg_color_vout = bg_color_vin;\n\
+    inner_color_vout = inner_color_vin;\n\
+    outer_color_vout = outer_color_vin;\n\
 \n\
     texture_uv_vout = texture_uv_vin;\n\
 \n\
@@ -46,8 +46,8 @@ void main() {\n\
 
 static constexpr const char* FRAG_STR_TEXT = "#version 330 core\n\
 \n\
-in  vec4 fg_color_vout;\n\
-in  vec4 bg_color_vout;\n\
+in  vec4 inner_color_vout;\n\
+in  vec4 outer_color_vout;\n\
 in  vec2 texture_uv_vout;\n\
 \n\
 uniform sampler2D sampler_font;\n\
@@ -64,16 +64,16 @@ void main()\n\
 \n\
     if ( gate2_high <= step ) {\n\
 \n\
-        color_fout = fg_color_vout;\n\
+        color_fout = inner_color_vout;\n\
     }\n\
     else if ( gate2_low <= step && step < gate2_high ) {\n\
 \n\
         float alpha = smoothstep( gate2_low, gate2_high, step );\n\
-        color_fout = fg_color_vout * alpha + bg_color_vout * ( 1.0 - alpha );\n\
+        color_fout = inner_color_vout * alpha + outer_color_vout * ( 1.0 - alpha );\n\
     }\n\
     else {\n\
         float alpha = smoothstep( gate1_low, gate1_high, step );\n\
-        color_fout = bg_color_vout;\n\
+        color_fout = outer_color_vout;\n\
         color_fout.a = alpha;\n\
     }\n\
 }\n\
@@ -141,8 +141,8 @@ private:
     GLuint         m_font_texture;
 
     GLuint         m_vertex_location_position_lcs;
-    GLuint         m_vertex_location_fg_color;
-    GLuint         m_vertex_location_bg_color;
+    GLuint         m_vertex_location_inner_color;
+    GLuint         m_vertex_location_outer_color;
     GLuint         m_vertex_location_texture_uv;
 
     GLuint         m_uniform_location_P;

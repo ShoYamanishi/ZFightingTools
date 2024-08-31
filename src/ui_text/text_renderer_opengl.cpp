@@ -47,8 +47,8 @@ TextRendererOpenGL::TextRendererOpenGL(
     glUseProgram( m_gl_prog_id );
 
     m_vertex_location_position_lcs = glGetAttribLocation( m_gl_prog_id, "position_lcs"   );
-    m_vertex_location_fg_color     = glGetAttribLocation( m_gl_prog_id, "fg_color_vin"   );
-    m_vertex_location_bg_color     = glGetAttribLocation( m_gl_prog_id, "bg_color_vin"   );
+    m_vertex_location_inner_color  = glGetAttribLocation( m_gl_prog_id, "inner_color_vin");
+    m_vertex_location_outer_color  = glGetAttribLocation( m_gl_prog_id, "outer_color_vin");
     m_vertex_location_texture_uv   = glGetAttribLocation( m_gl_prog_id, "texture_uv_vin" );
 
 
@@ -145,8 +145,8 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     glUniform1i( m_uniform_location_sampler_font, 0 );
 
     glEnableVertexAttribArray( m_vertex_location_position_lcs );
-    glEnableVertexAttribArray( m_vertex_location_fg_color     );
-    glEnableVertexAttribArray( m_vertex_location_bg_color     );
+    glEnableVertexAttribArray( m_vertex_location_inner_color  );
+    glEnableVertexAttribArray( m_vertex_location_outer_color  );
     glEnableVertexAttribArray( m_vertex_location_texture_uv   );
 
     glVertexAttribPointer(
@@ -159,7 +159,7 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glVertexAttribPointer(
-        m_vertex_location_fg_color,
+        m_vertex_location_inner_color,
         4,
         GL_FLOAT,
         GL_FALSE,
@@ -168,7 +168,7 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glVertexAttribPointer(
-        m_vertex_location_bg_color,
+        m_vertex_location_outer_color,
         4,
         GL_FLOAT,
         GL_FALSE,
@@ -202,8 +202,8 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glDisableVertexAttribArray( m_vertex_location_position_lcs );
-    glDisableVertexAttribArray( m_vertex_location_fg_color     );
-    glDisableVertexAttribArray( m_vertex_location_bg_color     );
+    glDisableVertexAttribArray( m_vertex_location_inner_color  );
+    glDisableVertexAttribArray( m_vertex_location_outer_color  );
     glDisableVertexAttribArray( m_vertex_location_texture_uv   );
 
     glDisable( GL_BLEND );
