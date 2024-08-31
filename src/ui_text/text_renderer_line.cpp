@@ -6,12 +6,14 @@ TextRendererLine::TextRendererLine(
     Font::RuntimeHelper& helper,
     const std::string&   str,
     const float          font_size,
-    const glm::vec4&     color
+    const glm::vec4&     fg_color,
+    const glm::vec4&     bg_color
 )
     :m_helper                  { helper }
     ,m_str                     { str }
     ,m_font_size               { font_size }
-    ,m_color                   { color }
+    ,m_fg_color                { fg_color }
+    ,m_bg_color                { bg_color }
     ,m_base                    { 0.0f, 0.0f }
     ,m_bounding_box_bottom_left{ 0.0f, 0.0f }
     ,m_bounding_box_top_right  { 0.0f, 0.0f }
@@ -131,10 +133,10 @@ void TextRendererLine::generateRenderVertices( const std::vector< Font::GlyphBou
         const glm::vec2 uv2{ u1, v1 };
         const glm::vec2 uv3{ u0, v1 };
 
-        const TextRendererVertex vert0{  p0, m_color, uv0 };
-        const TextRendererVertex vert1{  p1, m_color, uv1 };
-        const TextRendererVertex vert2{  p2, m_color, uv2 };
-        const TextRendererVertex vert3{  p3, m_color, uv3 };
+        const TextRendererVertex vert0{  p0, m_fg_color, m_bg_color, uv0 };
+        const TextRendererVertex vert1{  p1, m_fg_color, m_bg_color, uv1 };
+        const TextRendererVertex vert2{  p2, m_fg_color, m_bg_color, uv2 };
+        const TextRendererVertex vert3{  p3, m_fg_color, m_bg_color, uv3 };
 
         m_vertices[ i * 4     ] = vert0;
         m_vertices[ i * 4 + 1 ] = vert1;
@@ -144,11 +146,19 @@ void TextRendererLine::generateRenderVertices( const std::vector< Font::GlyphBou
 
 }
 
-void TextRendererLine::setColor( const glm::vec4& color )
+void TextRendererLine::setForegroundColor( const glm::vec4& color )
 {
     for ( int i = 0; i < m_num_glyphs; i++ ) {
 
-        m_vertices[i].setColor( color );
+        m_vertices[i].setForegroundColor( color );
+    }
+}
+
+void TextRendererLine::setBackgroundColor( const glm::vec4& color )
+{
+    for ( int i = 0; i < m_num_glyphs; i++ ) {
+
+        m_vertices[i].setBackgroundColor( color );
     }
 }
 

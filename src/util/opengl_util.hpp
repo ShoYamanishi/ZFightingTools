@@ -2,6 +2,7 @@
 #define __DEPTH_TEST_OPENGL_UTIL_HPP__
 
 #include <iostream>
+#include <vector>
 #include <string>
 #include <GL/glew.h>
 

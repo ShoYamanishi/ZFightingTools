@@ -3,8 +3,10 @@
 namespace DepthTest {
 
 const std::string UITextShaderComparator::FONT_FILE_PATH_WO_EXT = "../data/font";
-const float       UITextShaderComparator::FONT_SMOOTH_LOW       = 0.45;
-const float       UITextShaderComparator::FONT_SMOOTH_HIGH      = 0.55;
+const float       UITextShaderComparator::FONT_GATE1_LOW  = 0.35;
+const float       UITextShaderComparator::FONT_GATE1_HIGH = 0.45;
+const float       UITextShaderComparator::FONT_GATE2_LOW  = 0.45;
+const float       UITextShaderComparator::FONT_GATE2_HIGH = 0.55;
 const std::string UITextShaderComparator::INSTRUCTION_LINE_01 = "Press '1'(red), '2'(blue), or 'c'(camera) to select the cylinder to move.";
 const std::string UITextShaderComparator::INSTRUCTION_LINE_02 = "Press 'o(orient)', 't(translate)', or 's(scale)' to select the operations.";
 const std::string UITextShaderComparator::INSTRUCTION_LINE_03 = "Use drag-cursor or arrow keys to alter the x- and y-coordinates and angles.";
@@ -21,6 +23,7 @@ const float UITextShaderComparator::LINE_SPACING               = 1.2f;
 const float UITextShaderComparator::VERTICAL_RATIO_BOTTOM_PANE = 0.2f;
 const float UITextShaderComparator::MARGIN_SCREEN_EDGE         = 0.1f;
 const glm::vec4 UITextShaderComparator::COLOR_WHITE = glm::vec4{ 1.0f,  1.0f,  1.0f,  1.0f };
+const glm::vec4 UITextShaderComparator::COLOR_BLACK = glm::vec4{ 0.0f,  0.0f,  0.0f,  1.0f };
 const glm::vec4 UITextShaderComparator::COLOR_KHAKI = glm::vec4{ 0.93f, 0.90f, 0.55f, 1.0f };
 
 UITextShaderComparator::UITextShaderComparator( GLFWWindow& window, GLFWUserInputShaderComparator& ui )
@@ -28,8 +31,10 @@ UITextShaderComparator::UITextShaderComparator( GLFWWindow& window, GLFWUserInpu
     :m_renderer{
         window,
         FONT_FILE_PATH_WO_EXT + ".png",
-        FONT_SMOOTH_LOW,
-        FONT_SMOOTH_HIGH
+        FONT_GATE1_LOW,
+        FONT_GATE1_HIGH,
+        FONT_GATE2_LOW,
+        FONT_GATE2_HIGH
     }
     ,m_font_helper      { FONT_FILE_PATH_WO_EXT + ".txt" }
     ,m_window           { window }
@@ -90,17 +95,17 @@ void UITextShaderComparator::getLayoutHintsForBottomText()
 
 void UITextShaderComparator::createLines()
 {
-    m_line_fixed_01    = createLine( INSTRUCTION_LINE_01, COLOR_WHITE );
-    m_line_fixed_02    = createLine( INSTRUCTION_LINE_02, COLOR_WHITE );
-    m_line_fixed_03    = createLine( INSTRUCTION_LINE_03, COLOR_WHITE );
-    m_line_fixed_04    = createLine( INSTRUCTION_LINE_04, COLOR_WHITE );
-    m_line_fixed_05    = createLine( INSTRUCTION_LINE_05, COLOR_WHITE );
-    m_line_object      = createLine( INFO_LINE_OBJECT    + m_ui.activeObjectStr(),    COLOR_KHAKI );
-    m_line_operation   = createLine( INFO_LINE_OPERATION + m_ui.activeOperationStr(), COLOR_KHAKI );
+    m_line_fixed_01    = createLine( INSTRUCTION_LINE_01, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_02    = createLine( INSTRUCTION_LINE_02, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_03    = createLine( INSTRUCTION_LINE_03, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_04    = createLine( INSTRUCTION_LINE_04, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_05    = createLine( INSTRUCTION_LINE_05, COLOR_WHITE, COLOR_BLACK );
+    m_line_object      = createLine( INFO_LINE_OBJECT    + m_ui.activeObjectStr(),    COLOR_KHAKI, COLOR_BLACK );
+    m_line_operation   = createLine( INFO_LINE_OPERATION + m_ui.activeOperationStr(), COLOR_KHAKI, COLOR_BLACK );
 
-    m_line_title_left   = createLine( PANE_01, COLOR_WHITE );
-    m_line_title_center = createLine( PANE_02, COLOR_WHITE );
-    m_line_title_right  = createLine( PANE_03, COLOR_WHITE );
+    m_line_title_left   = createLine( PANE_01, COLOR_WHITE, COLOR_BLACK );
+    m_line_title_center = createLine( PANE_02, COLOR_WHITE, COLOR_BLACK );
+    m_line_title_right  = createLine( PANE_03, COLOR_WHITE, COLOR_BLACK );
 
     m_renderer.registerLine( m_line_fixed_01 );
     m_renderer.registerLine( m_line_fixed_02 );
@@ -189,7 +194,7 @@ void UITextShaderComparator::updateLineObject()
         m_line_object = nullptr;
     }
 
-    m_line_object = createLine( INFO_LINE_OBJECT + m_ui.activeObjectStr(), COLOR_KHAKI );
+    m_line_object = createLine( INFO_LINE_OBJECT + m_ui.activeObjectStr(), COLOR_KHAKI, COLOR_BLACK );
     m_renderer.registerLine( m_line_object );
 
     auto base = m_base_bottom_start;
@@ -207,7 +212,7 @@ void UITextShaderComparator::updateLineOperation()
         m_line_operation = nullptr;
     }
 
-    m_line_operation = createLine( INFO_LINE_OPERATION + m_ui.activeOperationStr(), COLOR_KHAKI );
+    m_line_operation = createLine( INFO_LINE_OPERATION + m_ui.activeOperationStr(), COLOR_KHAKI, COLOR_BLACK );
     m_renderer.registerLine( m_line_operation );
 
     auto base = m_base_bottom_start;
@@ -330,9 +335,9 @@ glm::vec2 UITextShaderComparator::max( const std::vector< glm::vec2 >& vecs )
     return max_v;
 }
 
-TextRendererLine* UITextShaderComparator::createLine( const std::string& str, const glm::vec4& color )
+TextRendererLine* UITextShaderComparator::createLine( const std::string& str, const glm::vec4& fg_color, const glm::vec4& bg_color )
 {
-    return new TextRendererLine{ m_font_helper, str, m_font_size, color };
+    return new TextRendererLine{ m_font_helper, str, m_font_size, fg_color, bg_color };
 }
 
 glm::vec2 UITextShaderComparator::getWidthHeightOfText( const std::string& str, const float font_size )

@@ -10,32 +10,41 @@ class TextRendererVertex {
 public:
 
     glm::vec4 m_pos;
-    glm::vec4 m_color;
+    glm::vec4 m_fg_color;
+    glm::vec4 m_bg_color;
     glm::vec2 m_uv;
     int32_t   __padding01__;
     int32_t   __padding02__;
 
     explicit TextRendererVertex(
         const glm::vec4& pos,
-        const glm::vec4& color,
+        const glm::vec4& fg_color,
+        const glm::vec4& bg_color,
         const glm::vec2& uv
     ) noexcept
-        :m_pos  { pos }
-        ,m_color{ color }
-        ,m_uv   { uv }
+        :m_pos     { pos }
+        ,m_fg_color{ fg_color }
+        ,m_bg_color{ bg_color }
+        ,m_uv      { uv }
     {
     }
 
     explicit TextRendererVertex() noexcept
-        :m_pos  { 0.0f, 0.0f, 0.0f, 0.0f }
-        ,m_color{ 0.0f, 0.0f, 0.0f, 0.0f }
-        ,m_uv   { 0.0f, 0.0f }
+        :m_pos     { 0.0f, 0.0f, 0.0f, 0.0f }
+        ,m_fg_color{ 0.0f, 0.0f, 0.0f, 0.0f }
+        ,m_bg_color{ 0.0f, 0.0f, 0.0f, 0.0f }
+        ,m_uv      { 0.0f, 0.0f }
     {
     }
 
-    void setColor( const glm::vec4& color )
+    void setForegroundColor( const glm::vec4& color )
     {
-        m_color = color;
+        m_fg_color = color;
+    }
+
+    void setBackgroundColor( const glm::vec4& color )
+    {
+        m_bg_color = color;
     }
 
     glm::vec4 pos() const

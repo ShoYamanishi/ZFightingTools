@@ -3,8 +3,10 @@
 namespace DepthTest {
 
 const std::string UITextInteractive::FONT_FILE_PATH_WO_EXT = "../data/font";
-const float       UITextInteractive::FONT_SMOOTH_LOW       = 0.45;
-const float       UITextInteractive::FONT_SMOOTH_HIGH      = 0.55;
+const float       UITextInteractive::FONT_GATE1_LOW       = 0.35;
+const float       UITextInteractive::FONT_GATE1_HIGH      = 0.45;
+const float       UITextInteractive::FONT_GATE2_LOW       = 0.45;
+const float       UITextInteractive::FONT_GATE2_HIGH      = 0.55;
 const std::string UITextInteractive::INSTRUCTION_LINE_01 = "Press 'f', 'n', 'c', '1(red)', or '2(blue)' to select the parameter.";
 const std::string UITextInteractive::INSTRUCTION_LINE_02 = "Press vertical arrow keys to change the Z-coordinates by a large amount.";
 const std::string UITextInteractive::INSTRUCTION_LINE_03 = "Press horizontal arrow keys to change the Z-coordinates by a small amount .";
@@ -26,6 +28,7 @@ const float UITextInteractive::LINE_SPACING               = 1.2f;
 const float UITextInteractive::VERTICAL_RATIO_BOTTOM_PANE = 0.3f;
 const float UITextInteractive::MARGIN_SCREEN_EDGE         = 0.1f;
 const glm::vec4 UITextInteractive::COLOR_WHITE = glm::vec4{ 1.0f,  1.0f,  1.0f,  1.0f };
+const glm::vec4 UITextInteractive::COLOR_BLACK = glm::vec4{ 0.0f,  0.0f,  0.0f,  1.0f };
 const glm::vec4 UITextInteractive::COLOR_KHAKI = glm::vec4{ 0.93f, 0.90f, 0.55f, 1.0f };
 
 UITextInteractive::UITextInteractive( GLFWWindow& window, GLFWUserInputInteractive& ui )
@@ -34,8 +37,10 @@ UITextInteractive::UITextInteractive( GLFWWindow& window, GLFWUserInputInteracti
 
         window,
         FONT_FILE_PATH_WO_EXT + ".png",
-        FONT_SMOOTH_LOW,
-        FONT_SMOOTH_HIGH
+        FONT_GATE1_LOW,
+        FONT_GATE1_HIGH,
+        FONT_GATE2_LOW,
+        FONT_GATE2_HIGH
     }
     ,m_font_helper      { FONT_FILE_PATH_WO_EXT + ".txt" }
     ,m_window           { window }
@@ -130,28 +135,28 @@ void UITextInteractive::updateDistanceValues()
 
 void UITextInteractive::createLines()
 {
-    m_line_fixed_01    = createLine( INSTRUCTION_LINE_01, COLOR_WHITE );
-    m_line_fixed_02    = createLine( INSTRUCTION_LINE_02, COLOR_WHITE );
-    m_line_fixed_03    = createLine( INSTRUCTION_LINE_03, COLOR_WHITE );
-    m_line_fixed_04    = createLine( INSTRUCTION_LINE_04, COLOR_WHITE );
-    m_line_fixed_05    = createLine( INSTRUCTION_LINE_05, COLOR_WHITE );
-    m_line_fixed_06    = createLine( INSTRUCTION_LINE_06, COLOR_WHITE );
-    m_line_near        = createLine( INFO_LINE_NEAR    + std::to_string( m_value_near    ), m_color_near );
-    m_line_far         = createLine( INFO_LINE_FAR     + std::to_string( m_value_far     ), m_color_far );
-    m_line_param_c     = createLine( INFO_LINE_PARAM_C + std::to_string( m_value_param_c ), m_color_far );
-    m_line_plane_1     = createLine( INFO_LINE_PLANE_1 + std::to_string( m_value_plane_1 ), m_color_plane_1 );
-    m_line_plane_2     = createLine( INFO_LINE_PLANE_2 + std::to_string( m_value_plane_2 ), m_color_plane_2 );
+    m_line_fixed_01    = createLine( INSTRUCTION_LINE_01, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_02    = createLine( INSTRUCTION_LINE_02, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_03    = createLine( INSTRUCTION_LINE_03, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_04    = createLine( INSTRUCTION_LINE_04, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_05    = createLine( INSTRUCTION_LINE_05, COLOR_WHITE, COLOR_BLACK );
+    m_line_fixed_06    = createLine( INSTRUCTION_LINE_06, COLOR_WHITE, COLOR_BLACK );
+    m_line_near        = createLine( INFO_LINE_NEAR    + std::to_string( m_value_near    ), m_color_near,    COLOR_BLACK );
+    m_line_far         = createLine( INFO_LINE_FAR     + std::to_string( m_value_far     ), m_color_far,     COLOR_BLACK );
+    m_line_param_c     = createLine( INFO_LINE_PARAM_C + std::to_string( m_value_param_c ), m_color_far,     COLOR_BLACK );
+    m_line_plane_1     = createLine( INFO_LINE_PLANE_1 + std::to_string( m_value_plane_1 ), m_color_plane_1, COLOR_BLACK );
+    m_line_plane_2     = createLine( INFO_LINE_PLANE_2 + std::to_string( m_value_plane_2 ), m_color_plane_2, COLOR_BLACK );
 
     if ( m_value_plane_1 < m_value_plane_2 ) {
-        m_line_diff = createLine( INFO_LINE_DIFF + " (plane1/red  is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE );
+        m_line_diff = createLine( INFO_LINE_DIFF + " (plane1/red  is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE, COLOR_BLACK );
     }
     else {
-        m_line_diff = createLine( INFO_LINE_DIFF + " (plane2/blue is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE );
+        m_line_diff = createLine( INFO_LINE_DIFF + " (plane2/blue is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE, COLOR_BLACK );
     }
-    m_line_edge_length = createLine( INFO_LINE_EDGE_LENGTH + std::to_string( m_value_edge_length ), COLOR_WHITE );
-    m_line_title_left   = createLine( PANE_01, COLOR_WHITE );
-    m_line_title_center = createLine( PANE_02, COLOR_WHITE );
-    m_line_title_right  = createLine( PANE_03, COLOR_WHITE );
+    m_line_edge_length = createLine( INFO_LINE_EDGE_LENGTH + std::to_string( m_value_edge_length ), COLOR_WHITE, COLOR_BLACK );
+    m_line_title_left   = createLine( PANE_01, COLOR_WHITE, COLOR_BLACK );
+    m_line_title_center = createLine( PANE_02, COLOR_WHITE, COLOR_BLACK );
+    m_line_title_right  = createLine( PANE_03, COLOR_WHITE, COLOR_BLACK );
 
     m_renderer.registerLine( m_line_fixed_01 );
     m_renderer.registerLine( m_line_fixed_02 );
@@ -307,7 +312,7 @@ void UITextInteractive::updateLineNear()
         m_line_near = nullptr;
     }
 
-    m_line_near = createLine( INFO_LINE_NEAR + std::to_string( m_value_near ), m_color_near );
+    m_line_near = createLine( INFO_LINE_NEAR + std::to_string( m_value_near ), m_color_near, COLOR_BLACK );
     m_renderer.registerLine( m_line_near );
 
     auto base = m_base_bottom_start;
@@ -325,7 +330,7 @@ void UITextInteractive::updateLineFar()
         m_line_far = nullptr;
     }
 
-    m_line_far = createLine( INFO_LINE_FAR + std::to_string( m_value_far ), m_color_far );
+    m_line_far = createLine( INFO_LINE_FAR + std::to_string( m_value_far ), m_color_far, COLOR_BLACK );
     m_renderer.registerLine( m_line_far );
 
     auto base = m_base_bottom_start;
@@ -343,7 +348,7 @@ void UITextInteractive::updateLineParamC()
         m_line_param_c = nullptr;
     }
 
-    m_line_param_c = createLine( INFO_LINE_PARAM_C + std::to_string( m_value_param_c ), m_color_param_c );
+    m_line_param_c = createLine( INFO_LINE_PARAM_C + std::to_string( m_value_param_c ), m_color_param_c, COLOR_BLACK );
     m_renderer.registerLine( m_line_param_c );
 
     auto base = m_base_bottom_start;
@@ -361,7 +366,7 @@ void UITextInteractive::updateLinePlane1()
         m_line_plane_1 = nullptr;
     }
 
-    m_line_plane_1 = createLine( INFO_LINE_PLANE_1 + std::to_string( m_value_plane_1 ), m_color_plane_1 );
+    m_line_plane_1 = createLine( INFO_LINE_PLANE_1 + std::to_string( m_value_plane_1 ), m_color_plane_1, COLOR_BLACK );
     m_renderer.registerLine( m_line_plane_1 );
 
     auto base = m_base_bottom_start;
@@ -379,7 +384,7 @@ void UITextInteractive::updateLinePlane2()
         m_line_plane_2 = nullptr;
     }
 
-    m_line_plane_2 = createLine( INFO_LINE_PLANE_2 + std::to_string( m_value_plane_2 ), m_color_plane_2 );
+    m_line_plane_2 = createLine( INFO_LINE_PLANE_2 + std::to_string( m_value_plane_2 ), m_color_plane_2, COLOR_BLACK );
     m_renderer.registerLine( m_line_plane_2 );
 
     auto base = m_base_bottom_start;
@@ -398,10 +403,10 @@ void UITextInteractive::updateLineDiff()
     }
 
     if ( m_value_plane_1 < m_value_plane_2 ) {
-        m_line_diff = createLine( INFO_LINE_DIFF + " (plane1/red  is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE );
+        m_line_diff = createLine( INFO_LINE_DIFF + " (plane1/red  is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE, COLOR_BLACK );
     }
     else {
-        m_line_diff = createLine( INFO_LINE_DIFF + " (plane2/blue is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE );
+        m_line_diff = createLine( INFO_LINE_DIFF + " (plane2/blue is closer): "    + std::to_string( m_value_diff    ), COLOR_WHITE, COLOR_BLACK );
     }
 
     m_renderer.registerLine( m_line_diff );
@@ -421,7 +426,7 @@ void UITextInteractive::updateLineEdgeLength()
         m_line_edge_length = nullptr;
     }
 
-    m_line_edge_length = createLine( INFO_LINE_EDGE_LENGTH + std::to_string( m_value_edge_length ), COLOR_WHITE );
+    m_line_edge_length = createLine( INFO_LINE_EDGE_LENGTH + std::to_string( m_value_edge_length ), COLOR_WHITE, COLOR_BLACK );
     m_renderer.registerLine( m_line_edge_length );
 
     auto base = m_base_bottom_start;
@@ -677,9 +682,12 @@ glm::vec2 UITextInteractive::max( const std::vector< glm::vec2 >& vecs )
     return max_v;
 }
 
-TextRendererLine* UITextInteractive::createLine( const std::string& str, const glm::vec4& color )
-{
-    return new TextRendererLine{ m_font_helper, str, m_font_size, color };
+TextRendererLine* UITextInteractive::createLine(
+    const std::string& str,
+    const glm::vec4&   fg_color,
+    const glm::vec4&   bg_color
+) {
+    return new TextRendererLine{ m_font_helper, str, m_font_size, fg_color, bg_color };
 }
 
 glm::vec2 UITextInteractive::getWidthHeightOfText( const std::string& str, const float font_size )

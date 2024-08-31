@@ -8,13 +8,17 @@ namespace DepthTest {
 TextRendererOpenGL::TextRendererOpenGL(
     GLFWWindow&       window,
     const std::string font_path,
-    const float       font_smooth_low,
-    const float       font_smooth_high
+    const float       gate1_low,
+    const float       gate1_high,
+    const float       gate2_low,
+    const float       gate2_high
 )
     :m_window           { window }
     ,m_font_path        { font_path }
-    ,m_font_smooth_low  { font_smooth_low }
-    ,m_font_smooth_high { font_smooth_high }
+    ,m_gate1_low        { gate1_low }
+    ,m_gate1_high       { gate1_high }
+    ,m_gate2_low        { gate2_low }
+    ,m_gate2_high       { gate2_high }
     ,m_uniform_M        { 1.0f }
     ,m_uniform_V        { 1.0f }
     ,m_uniform_P        { 1.0f }
@@ -43,16 +47,19 @@ TextRendererOpenGL::TextRendererOpenGL(
     glUseProgram( m_gl_prog_id );
 
     m_vertex_location_position_lcs = glGetAttribLocation( m_gl_prog_id, "position_lcs"   );
-    m_vertex_location_color        = glGetAttribLocation( m_gl_prog_id, "color_vin"      );
+    m_vertex_location_fg_color     = glGetAttribLocation( m_gl_prog_id, "fg_color_vin"   );
+    m_vertex_location_bg_color     = glGetAttribLocation( m_gl_prog_id, "bg_color_vin"   );
     m_vertex_location_texture_uv   = glGetAttribLocation( m_gl_prog_id, "texture_uv_vin" );
+
 
     m_uniform_location_P              = glGetUniformLocation( m_gl_prog_id, "P" );
     m_uniform_location_V              = glGetUniformLocation( m_gl_prog_id, "V" );
     m_uniform_location_M              = glGetUniformLocation( m_gl_prog_id, "M" );
 
-    m_uniform_location_smooth_low     = glGetUniformLocation( m_gl_prog_id, "smooth_low" );
-    m_uniform_location_smooth_high    = glGetUniformLocation( m_gl_prog_id, "smooth_high" );
-    m_uniform_location_color_override = glGetUniformLocation( m_gl_prog_id, "color_override" );
+    m_uniform_location_gate1_low      = glGetUniformLocation( m_gl_prog_id, "gate1_low" );
+    m_uniform_location_gate1_high     = glGetUniformLocation( m_gl_prog_id, "gate1_high" );
+    m_uniform_location_gate2_low      = glGetUniformLocation( m_gl_prog_id, "gate2_low" );
+    m_uniform_location_gate2_high     = glGetUniformLocation( m_gl_prog_id, "gate2_high" );
     m_uniform_location_sampler_font   = glGetUniformLocation( m_gl_prog_id, "sampler_font" );
 }
 
@@ -138,7 +145,8 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     glUniform1i( m_uniform_location_sampler_font, 0 );
 
     glEnableVertexAttribArray( m_vertex_location_position_lcs );
-    glEnableVertexAttribArray( m_vertex_location_color        );
+    glEnableVertexAttribArray( m_vertex_location_fg_color     );
+    glEnableVertexAttribArray( m_vertex_location_bg_color     );
     glEnableVertexAttribArray( m_vertex_location_texture_uv   );
 
     glVertexAttribPointer(
@@ -151,7 +159,7 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glVertexAttribPointer(
-        m_vertex_location_color,
+        m_vertex_location_fg_color,
         4,
         GL_FLOAT,
         GL_FALSE,
@@ -160,33 +168,31 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glVertexAttribPointer(
-        m_vertex_location_texture_uv,
-        2,
+        m_vertex_location_bg_color,
+        4,
         GL_FLOAT,
         GL_FALSE,
         sizeof(TextRendererVertex),
         (void*)( 8 * sizeof(float) )
     );
 
+
+    glVertexAttribPointer(
+        m_vertex_location_texture_uv,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        sizeof(TextRendererVertex),
+        (void*)( 12 * sizeof(float) )
+    );
+
     glActiveTexture( GL_TEXTURE0 );
     glBindTexture( GL_TEXTURE_2D, m_font_texture );
 
-    const glm::vec4 color_override = OUTLINE_COLOR;
-    glUniform4fv( m_uniform_location_color_override, 1, &(color_override[0]) );
-    glUniform1f( m_uniform_location_smooth_low,  std::max( 0.0f, m_font_smooth_low - OUTLINE_OFFSET )  );
-    glUniform1f( m_uniform_location_smooth_high, m_font_smooth_high );
-
-    glDrawElements(
-        GL_TRIANGLES,
-        m_num_indices,
-        GL_UNSIGNED_INT,
-        nullptr
-    );
-
-    const glm::vec4 color_override_none{ 0.0f, 0.0f, 0.0f, 0.0f };
-    glUniform4fv( m_uniform_location_color_override, 1, &(color_override_none[0]) );
-    glUniform1f( m_uniform_location_smooth_low,  m_font_smooth_low );
-    glUniform1f( m_uniform_location_smooth_high, m_font_smooth_high );
+    glUniform1f( m_uniform_location_gate1_low,  m_gate1_low );
+    glUniform1f( m_uniform_location_gate1_high, m_gate1_high );
+    glUniform1f( m_uniform_location_gate2_low,  m_gate2_low );
+    glUniform1f( m_uniform_location_gate2_high, m_gate2_high );
 
     glDrawElements(
         GL_TRIANGLES,
@@ -196,7 +202,8 @@ void TextRendererOpenGL::render( const bool initialize_screen )
     );
 
     glDisableVertexAttribArray( m_vertex_location_position_lcs );
-    glDisableVertexAttribArray( m_vertex_location_color        );
+    glDisableVertexAttribArray( m_vertex_location_fg_color     );
+    glDisableVertexAttribArray( m_vertex_location_bg_color     );
     glDisableVertexAttribArray( m_vertex_location_texture_uv   );
 
     glDisable( GL_BLEND );

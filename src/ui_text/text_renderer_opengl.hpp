@@ -19,14 +19,16 @@ namespace DepthTest {
 static constexpr const char* VERT_STR_TEXT = "#version 330 core\n\
 \n\
 in vec4 position_lcs;\n\
-in vec4 color_vin;\n\
+in vec4 fg_color_vin;\n\
+in vec4 bg_color_vin;\n\
 in vec2 texture_uv_vin;\n\
 \n\
 uniform mat4 P;\n\
 uniform mat4 V;\n\
 uniform mat4 M;\n\
 \n\
-out vec4 color_vout;\n\
+out vec4 fg_color_vout;\n\
+out vec4 bg_color_vout;\n\
 out vec2 texture_uv_vout;\n\
 \n\
 void main() {\n\
@@ -34,7 +36,8 @@ void main() {\n\
     vec4 position_vcs = V * position_wcs;\n\
     gl_Position = P * position_vcs;\n\
 \n\
-    color_vout = color_vin;\n\
+    fg_color_vout = fg_color_vin;\n\
+    bg_color_vout = bg_color_vin;\n\
 \n\
     texture_uv_vout = texture_uv_vin;\n\
 \n\
@@ -43,13 +46,15 @@ void main() {\n\
 
 static constexpr const char* FRAG_STR_TEXT = "#version 330 core\n\
 \n\
-in  vec4 color_vout;\n\
+in  vec4 fg_color_vout;\n\
+in  vec4 bg_color_vout;\n\
 in  vec2 texture_uv_vout;\n\
 \n\
 uniform sampler2D sampler_font;\n\
-uniform float smooth_low;\n\
-uniform float smooth_high;\n\
-uniform vec4 color_override;\n\
+uniform float gate1_low;\n\
+uniform float gate1_high;\n\
+uniform float gate2_low;\n\
+uniform float gate2_high;\n\
 \n\
 out vec4 color_fout;\n\
 \n\
@@ -57,16 +62,21 @@ void main()\n\
 {\n\
     float step = texture( sampler_font, texture_uv_vout ).r;\n\
 \n\
-    if ( color_override[3] == 0.0 ) {\n\
-        color_fout = color_vout;\n\
+    if ( gate2_high <= step ) {\n\
+\n\
+        color_fout = fg_color_vout;\n\
+    }\n\
+    else if ( gate2_low <= step && step < gate2_high ) {\n\
+\n\
+        float alpha = smoothstep( gate2_low, gate2_high, step );\n\
+        color_fout = fg_color_vout * alpha + bg_color_vout * ( 1.0 - alpha );\n\
     }\n\
     else {\n\
-        color_fout = color_override;\n\
+        float alpha = smoothstep( gate1_low, gate1_high, step );\n\
+        color_fout = bg_color_vout;\n\
+        color_fout.a = alpha;\n\
     }\n\
-\n\
-    color_fout.a = smoothstep( smooth_low, smooth_high, step );\n\
 }\n\
-\n\
 ";
 
 static constexpr float OUTLINE_OFFSET = 0.1f;
@@ -78,8 +88,10 @@ class TextRendererOpenGL {
     explicit TextRendererOpenGL(
         GLFWWindow&       window,
         const std::string font_path,
-        const float       font_smooth_low,
-        const float       font_smooth_high
+        const float       gate1_low,
+        const float       gate1_high,
+        const float       gate2_low,
+        const float       gate2_high
     );
 
     ~TextRendererOpenGL();
@@ -102,8 +114,11 @@ private:
     GLFWWindow&    m_window;
 
     std::string    m_font_path;
-    float          m_font_smooth_low;
-    float          m_font_smooth_high;
+    float          m_gate1_low;
+    float          m_gate1_high;
+    float          m_gate2_low;
+    float          m_gate2_high;
+
     std::set<
         TextRendererLine* 
     >              m_lines;
@@ -126,15 +141,17 @@ private:
     GLuint         m_font_texture;
 
     GLuint         m_vertex_location_position_lcs;
-    GLuint         m_vertex_location_color;
+    GLuint         m_vertex_location_fg_color;
+    GLuint         m_vertex_location_bg_color;
     GLuint         m_vertex_location_texture_uv;
 
     GLuint         m_uniform_location_P;
     GLuint         m_uniform_location_V;
     GLuint         m_uniform_location_M;
-    GLuint         m_uniform_location_smooth_low;
-    GLuint         m_uniform_location_smooth_high;
-    GLuint         m_uniform_location_color_override;
+    GLuint         m_uniform_location_gate1_low;
+    GLuint         m_uniform_location_gate1_high;
+    GLuint         m_uniform_location_gate2_low;
+    GLuint         m_uniform_location_gate2_high;
     GLuint         m_uniform_location_sampler_font;
 };
 

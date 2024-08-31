@@ -21,8 +21,10 @@ class UITextInteractive {
 public:
 
 static const std::string FONT_FILE_PATH_WO_EXT;
-static const float       FONT_SMOOTH_LOW;
-static const float       FONT_SMOOTH_HIGH;
+static const float       FONT_GATE1_LOW;
+static const float       FONT_GATE1_HIGH;
+static const float       FONT_GATE2_LOW;
+static const float       FONT_GATE2_HIGH;
 
 static const std::string INSTRUCTION_LINE_01;
 static const std::string INSTRUCTION_LINE_02;
@@ -46,6 +48,7 @@ static const float VERTICAL_RATIO_BOTTOM_PANE;
 static const float MARGIN_SCREEN_EDGE;
 
 static const glm::vec4 COLOR_WHITE;
+static const glm::vec4 COLOR_BLACK;
 static const glm::vec4 COLOR_KHAKI;
 
 
@@ -78,7 +81,7 @@ private:
     void updateColors();
 
     glm::vec2 max( const std::vector< glm::vec2 >& vecs );
-    TextRendererLine* createLine( const std::string& str, const glm::vec4& color );
+    TextRendererLine* createLine( const std::string& str, const glm::vec4& fg_color, const glm::vec4& bg_color );
     glm::vec2 getWidthHeightOfText( const std::string& str, const float font_size );
 
     TextRendererOpenGL    m_renderer;

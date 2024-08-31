@@ -13,18 +13,20 @@ class TextRendererLine {
 
 public:
     static constexpr float DEFAULT_LETTER_SPACING = 1.0f;
-    static constexpr float DEFAULT_FONT_SPREAD    = 0.2f;
+    static constexpr float DEFAULT_FONT_SPREAD    = 0.6f;
 
     explicit TextRendererLine(
         Font::RuntimeHelper& helper,
         const std::string&   str,
         const float          font_size,
-        const glm::vec4&     color
+        const glm::vec4&     fg_color,
+        const glm::vec4&     bg_color
     );
 
     ~TextRendererLine();
 
-    void setColor( const glm::vec4& color );
+    void setForegroundColor( const glm::vec4& color );
+    void setBackgroundColor( const glm::vec4& color );
     void setBaseXY( const glm::vec2& base );
 
     int32_t numVertices() const;
@@ -42,7 +44,8 @@ private:
     Font::RuntimeHelper& m_helper;
     const std::string    m_str;
     const float          m_font_size;
-    glm::vec4            m_color;
+    glm::vec4            m_fg_color;
+    glm::vec4            m_bg_color;
     glm::vec2            m_base;
     glm::vec2            m_bounding_box_bottom_left;
     glm::vec2            m_bounding_box_top_right;
